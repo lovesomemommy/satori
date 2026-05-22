@@ -1,0 +1,285 @@
+{
+  "format": 1,
+  "restore": {
+    "/Users/olesya/Desktop/Новая папка/src/Satori.Windows/Satori.Windows.csproj": {}
+  },
+  "projects": {
+    "/Users/olesya/Desktop/Новая папка/src/Satori.Client/Satori.Client.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/olesya/Desktop/Новая папка/src/Satori.Client/Satori.Client.csproj",
+        "projectName": "Satori.Client",
+        "projectPath": "/Users/olesya/Desktop/Новая папка/src/Satori.Client/Satori.Client.csproj",
+        "packagesPath": "/var/folders/_5/sm8j7rs51234zkyt8bsj78940000gn/T/cursor-sandbox-cache/26fb2202b456cf9ea7d322ab390d4cbf/nuget",
+        "outputPath": "/Users/olesya/Desktop/Новая папка/src/Satori.Client/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/olesya/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "/Users/olesya/Desktop/Новая папка/src/Satori.Core/Satori.Core.csproj": {
+                "projectPath": "/Users/olesya/Desktop/Новая папка/src/Satori.Core/Satori.Core.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "FontStashSharp.MonoGame": {
+              "target": "Package",
+              "version": "[1.3.7, )"
+            },
+            "Microsoft.Extensions.DependencyInjection": {
+              "target": "Package",
+              "version": "[8.0.1, )"
+            },
+            "MonoGame.Content.Builder.Task": {
+              "target": "Package",
+              "version": "[3.8.2.1105, )"
+            },
+            "MonoGame.Framework.DesktopGL": {
+              "target": "Package",
+              "version": "[3.8.2.1105, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/Users/olesya/.dotnet/sdk/8.0.421/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/olesya/Desktop/Новая папка/src/Satori.Core/Satori.Core.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/olesya/Desktop/Новая папка/src/Satori.Core/Satori.Core.csproj",
+        "projectName": "Satori.Core",
+        "projectPath": "/Users/olesya/Desktop/Новая папка/src/Satori.Core/Satori.Core.csproj",
+        "packagesPath": "/var/folders/_5/sm8j7rs51234zkyt8bsj78940000gn/T/cursor-sandbox-cache/26fb2202b456cf9ea7d322ab390d4cbf/nuget",
+        "outputPath": "/Users/olesya/Desktop/Новая папка/src/Satori.Core/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/olesya/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.Extensions.DependencyInjection.Abstractions": {
+              "target": "Package",
+              "version": "[8.0.2, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/Users/olesya/.dotnet/sdk/8.0.421/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/olesya/Desktop/Новая папка/src/Satori.Desktop/Satori.Desktop.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/olesya/Desktop/Новая папка/src/Satori.Desktop/Satori.Desktop.csproj",
+        "projectName": "Satori.Desktop",
+        "projectPath": "/Users/olesya/Desktop/Новая папка/src/Satori.Desktop/Satori.Desktop.csproj",
+        "packagesPath": "/var/folders/_5/sm8j7rs51234zkyt8bsj78940000gn/T/cursor-sandbox-cache/26fb2202b456cf9ea7d322ab390d4cbf/nuget",
+        "outputPath": "/Users/olesya/Desktop/Новая папка/src/Satori.Desktop/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/olesya/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "/Users/olesya/Desktop/Новая папка/src/Satori.Client/Satori.Client.csproj": {
+                "projectPath": "/Users/olesya/Desktop/Новая папка/src/Satori.Client/Satori.Client.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/Users/olesya/.dotnet/sdk/8.0.421/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/olesya/Desktop/Новая папка/src/Satori.Windows/Satori.Windows.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/olesya/Desktop/Новая папка/src/Satori.Windows/Satori.Windows.csproj",
+        "projectName": "Satori.Windows",
+        "projectPath": "/Users/olesya/Desktop/Новая папка/src/Satori.Windows/Satori.Windows.csproj",
+        "packagesPath": "/var/folders/_5/sm8j7rs51234zkyt8bsj78940000gn/T/cursor-sandbox-cache/26fb2202b456cf9ea7d322ab390d4cbf/nuget",
+        "outputPath": "/Users/olesya/Desktop/Новая папка/src/Satori.Windows/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/olesya/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0-windows"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0-windows7.0": {
+            "targetAlias": "net8.0-windows",
+            "projectReferences": {
+              "/Users/olesya/Desktop/Новая папка/src/Satori.Desktop/Satori.Desktop.csproj": {
+                "projectPath": "/Users/olesya/Desktop/Новая папка/src/Satori.Desktop/Satori.Desktop.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0-windows7.0": {
+          "targetAlias": "net8.0-windows",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[8.0.27, 8.0.27]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            },
+            "Microsoft.WindowsDesktop.App.WindowsForms": {
+              "privateAssets": "none"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/Users/olesya/.dotnet/sdk/8.0.421/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
