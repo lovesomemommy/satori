@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Satori.Client.Views.Rendering;
@@ -56,38 +55,31 @@ public sealed class ObstacleSpriteCatalog : IDisposable
 
 	private Texture2D? TryLoadFromDisk(ObstacleType type)
 	{
-		var fileName = type switch
-		{
-			ObstacleType.Harm => "beetle.png",
-			ObstacleType.Temptation => "coin.png",
-			ObstacleType.Mist => "cloud.png",
-			_ => null
-		};
-
-		if (fileName == null || _graphicsDevice == null)
+		if (_graphicsDevice == null)
 		{
 			return null;
 		}
 
-		foreach (var candidatePath in GetCandidatePaths(fileName))
+		foreach (var fileName in GetFileNames(type))
 		{
-			if (!File.Exists(candidatePath))
+			var texture = TextureLoadHelper.TryLoadFirstExisting(_graphicsDevice, ClientAssetPaths.QuoteImage(fileName));
+			if (texture != null)
 			{
-				continue;
-			}
-
-			try
-			{
-				return TextureLoadHelper.FromFile(_graphicsDevice, candidatePath);
-			}
-			catch (Exception)
-			{
-				return null;
+				return texture;
 			}
 		}
 
 		return null;
 	}
+
+	private static IEnumerable<string> GetFileNames(ObstacleType type) =>
+		type switch
+		{
+			ObstacleType.Harm => ["beetle.png"],
+			ObstacleType.Temptation => ["coin.png"],
+			ObstacleType.Mist => ["cloudd.png", "cloud.png"],
+			_ => []
+		};
 
 	private Texture2D CreatePlaceholder(ObstacleType type)
 	{
@@ -153,12 +145,5 @@ public sealed class ObstacleSpriteCatalog : IDisposable
 		var dx = x - size / 2f;
 		var dy = y - size / 2f;
 		return dx * dx + dy * dy <= 12f ? new Color(150, 90, 170) : Color.Transparent;
-	}
-
-	private static IEnumerable<string> GetCandidatePaths(string fileName)
-	{
-		yield return Path.Combine(AppContext.BaseDirectory, "ObstacleImages", fileName);
-		yield return Path.Combine(AppContext.BaseDirectory, "QuoteImages", fileName);
-		yield return Path.Combine(AppContext.BaseDirectory, "assets", "obstacles", fileName);
 	}
 }

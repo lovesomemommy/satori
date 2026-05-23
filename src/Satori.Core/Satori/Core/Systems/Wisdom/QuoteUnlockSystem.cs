@@ -23,22 +23,22 @@ public sealed class QuoteUnlockSystem
 
 	public QuoteModel? UnlockForRun(TrialRunState run, LotusModel lotus)
 	{
-		string quoteId = _catalog.GetQuoteIdForLotus(lotus.Id);
-		if (run.UnlockedQuotes.Any((QuoteModel q) => q.QuoteId == quoteId))
+		string quoteId = _catalog.GetQuoteIdForPilgrimageSegment(lotus.SegmentIndex);
+		if (run.UnlockedQuotes.Any(quote => quote.QuoteId == quoteId))
 		{
 			return null;
 		}
+
 		if (!_catalog.TryGetText(quoteId, out string text))
 		{
 			text = quoteId;
 		}
+
 		QuoteModel quoteModel = new QuoteModel
 		{
 			QuoteId = quoteId,
-			Rarity = _catalog.RarityForLotus(lotus.Type),
 			FoundAt = DateTimeOffset.UtcNow,
-			SourceSegmentIndex = lotus.SegmentIndex,
-			SourceLotusType = lotus.Type
+			SourceSegmentIndex = lotus.SegmentIndex
 		};
 		run.UnlockedQuotes.Add(quoteModel);
 		_eventBus.Publish(new QuoteUnlockedEvent(quoteId));

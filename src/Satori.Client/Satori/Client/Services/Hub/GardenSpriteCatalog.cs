@@ -1,6 +1,5 @@
-using System;
-using System.IO;
 using Microsoft.Xna.Framework.Graphics;
+using Satori.Client.Views.Rendering;
 
 namespace Satori.Client.Services.Hub;
 
@@ -13,44 +12,14 @@ public sealed class GardenSpriteCatalog : IDisposable
 	public void Initialize(GraphicsDevice graphicsDevice)
 	{
 		_floorTile?.Dispose();
-		_floorTile = null;
-
-		foreach (var candidatePath in GetCandidatePaths("garden.floor.png"))
-		{
-			if (!File.Exists(candidatePath))
-			{
-				continue;
-			}
-
-			try
-			{
-				_floorTile = Texture2D.FromFile(graphicsDevice, candidatePath);
-				return;
-			}
-			catch (Exception)
-			{
-				try
-				{
-					using var stream = File.OpenRead(candidatePath);
-					_floorTile = Texture2D.FromStream(graphicsDevice, stream);
-					return;
-				}
-				catch (Exception)
-				{
-					return;
-				}
-			}
-		}
+		_floorTile = TextureLoadHelper.TryLoadFirstExisting(
+			graphicsDevice,
+			ClientAssetPaths.InFolder("GardenImages", "garden.floor.png"));
 	}
 
 	public void Dispose()
 	{
 		_floorTile?.Dispose();
 		_floorTile = null;
-	}
-
-	private static IEnumerable<string> GetCandidatePaths(string fileName)
-	{
-		yield return Path.Combine(AppContext.BaseDirectory, "GardenImages", fileName);
 	}
 }

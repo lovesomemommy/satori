@@ -13,6 +13,8 @@ public static class VirtualInput
 		Rectangle letterboxBounds = viewport.LetterboxBounds;
 		int x = (mouse.X - letterboxBounds.X) / num;
 		int y = (mouse.Y - letterboxBounds.Y) / num;
+		x = Math.Clamp(x, 0, viewport.VirtualWidth - 1);
+		y = Math.Clamp(y, 0, viewport.VirtualHeight - 1);
 		return new MouseState(x, y, mouse.ScrollWheelValue, mouse.LeftButton, mouse.MiddleButton, mouse.RightButton, mouse.XButton1, mouse.XButton2);
 	}
 }

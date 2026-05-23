@@ -2,6 +2,7 @@ using Satori.Core.Models.Progression;
 using Satori.Core.Models.Save;
 using Satori.Core.Models.Wisdom;
 using Satori.Core.Systems.Progression;
+using Satori.Core.Systems.Wisdom;
 using Xunit;
 
 namespace Satori.Tests.Systems.Progression;
@@ -31,6 +32,21 @@ public sealed class WinConditionSystemTests
 		Assert.True(status.GardenFull);
 		Assert.True(status.WisdomGathered);
 		Assert.True(status.EnlightenmentReached);
+	}
+
+	[Fact]
+	public void Evaluate_CountsDistinctNormalizedQuotes()
+	{
+		var save = CreateNearCompleteSave();
+		save.Wisdom.Quotes.Clear();
+		save.Wisdom.Quotes.Add(new QuoteModel { QuoteId = "quote.lotus.01" });
+		save.Wisdom.Quotes.Add(new QuoteModel { QuoteId = "quote.lotus.04" });
+		save.Wisdom.Quotes.Add(new QuoteModel { QuoteId = "quote.lotus.13" });
+
+		var status = WinConditionSystem.Evaluate(save);
+
+		Assert.False(status.WisdomGathered);
+		Assert.Equal(3, save.Wisdom.Quotes.Count);
 	}
 
 	private static SaveGameModel CreateNearCompleteSave()

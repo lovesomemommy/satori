@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Satori.Core.Models.Lotus;
 using Satori.Core.Models.Progression;
-using Satori.Core.Services.Wisdom;
 
 namespace Satori.Core.Systems.Progression;
 
@@ -14,7 +12,6 @@ public sealed class GardenPlantingSystem
 	public int PlantCollectedLotuses(
 		PlayerMetaState meta,
 		IReadOnlyCollection<int> collectedLotusIds,
-		LotusCatalog lotusCatalog,
 		DateTimeOffset plantedAt)
 	{
 		if (collectedLotusIds.Count == 0)
@@ -39,7 +36,6 @@ public sealed class GardenPlantingSystem
 			{
 				SlotIndex = FindNextFreeSlot(meta),
 				LotusId = lotusId,
-				LotusType = lotusCatalog.GetType(lotusId),
 				PlantedAt = plantedAt
 			});
 			plantedCount++;

@@ -1,19 +1,18 @@
 ﻿using System.IO;
 using System.Text.Json;
-using Satori.Core.Interfaces.Services;
 using Satori.Core.Models.Save;
 
 namespace Satori.Core.Services.Save;
 
-public sealed class JsonSaveRepository : ISaveRepository
+public sealed class JsonSaveRepository
 {
-	private static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions
+	private static readonly JsonSerializerOptions JsonOptions = new()
 	{
 		WriteIndented = true,
 		PropertyNamingPolicy = JsonNamingPolicy.CamelCase
 	};
 
-	private readonly SaveMigrator _migrator = new SaveMigrator();
+	private readonly SaveMigrator _migrator = new();
 
 	public SaveGameModel Load(string path)
 	{
@@ -21,6 +20,7 @@ public sealed class JsonSaveRepository : ISaveRepository
 		{
 			return new SaveGameModel();
 		}
+
 		string json = File.ReadAllText(path);
 		SaveGameModel model = JsonSerializer.Deserialize<SaveGameModel>(json, JsonOptions) ?? new SaveGameModel();
 		return _migrator.Migrate(model);
@@ -33,25 +33,21 @@ public sealed class JsonSaveRepository : ISaveRepository
 		{
 			Directory.CreateDirectory(directoryName);
 		}
+
 		model.Version = 1;
 		SaveGameModel value = _migrator.Migrate(model);
 		string contents = JsonSerializer.Serialize(value, JsonOptions);
-		string text = path + ".tmp";
-		string destFileName = path + ".bak";
-		File.WriteAllText(text, contents);
+		string tempPath = path + ".tmp";
+		string backupPath = path + ".bak";
+		File.WriteAllText(tempPath, contents);
 		if (File.Exists(path))
 		{
-			File.Copy(path, destFileName, overwrite: true);
-		}
-		if (File.Exists(path))
-		{
+			File.Copy(path, backupPath, overwrite: true);
 			File.Delete(path);
 		}
-		File.Move(text, path);
+
+		File.Move(tempPath, path);
 	}
 
-	public bool Exists(string path)
-	{
-		return File.Exists(path);
-	}
+	public bool Exists(string path) => File.Exists(path);
 }

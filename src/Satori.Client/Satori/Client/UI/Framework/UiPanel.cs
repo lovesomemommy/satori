@@ -8,17 +8,18 @@ namespace Satori.Client.UI.Framework;
 
 public sealed class UiPanel : UiElement
 {
-	public List<IUiElement> Children { get; } = new List<IUiElement>();
+	public List<UiElement> Children { get; } = [];
 
 	public Color BackgroundColor { get; set; } = UiPalette.Panel;
 
 	public override void Update(GameTime gameTime, MouseState mouse, KeyboardState keyboard)
 	{
-		if (!base.IsVisible)
+		if (!IsVisible)
 		{
 			return;
 		}
-		foreach (IUiElement child in Children)
+
+		foreach (UiElement child in Children)
 		{
 			child.Update(gameTime, mouse, keyboard);
 		}
@@ -26,13 +27,17 @@ public sealed class UiPanel : UiElement
 
 	public override void Draw(SpriteBatch spriteBatch, Texture2D pixel, TextRenderingService text, float glowPhase)
 	{
-		if (!base.IsVisible)
+		if (!IsVisible)
 		{
 			return;
 		}
 
-		spriteBatch.Draw(pixel, base.Bounds, BackgroundColor);
-		foreach (IUiElement child in Children)
+		if (BackgroundColor.A > 0)
+		{
+			spriteBatch.Draw(pixel, Bounds, BackgroundColor);
+		}
+
+		foreach (UiElement child in Children)
 		{
 			child.Draw(spriteBatch, pixel, text, glowPhase);
 		}

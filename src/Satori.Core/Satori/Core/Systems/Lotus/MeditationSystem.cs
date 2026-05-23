@@ -83,43 +83,23 @@ public sealed class MeditationSystem
 		}
 	}
 
-	public float GetBreathScale()
-	{
-		MeditationPhase phase = State.Phase;
-		if (1 == 0)
+	public float GetBreathScale() =>
+		State.Phase switch
 		{
-		}
-		float result = phase switch
-		{
-			MeditationPhase.Inhale => Lerp(0.85f, 1.15f, State.PhaseElapsedSeconds / 1.5f), 
-			MeditationPhase.Hold => 1.15f, 
-			MeditationPhase.Exhale => Lerp(1.15f, 0.85f, State.PhaseElapsedSeconds / 1.5f), 
-			_ => 1f, 
+			MeditationPhase.Inhale => Lerp(0.85f, 1.15f, State.PhaseElapsedSeconds / 1.5f),
+			MeditationPhase.Hold => 1.15f,
+			MeditationPhase.Exhale => Lerp(1.15f, 0.85f, State.PhaseElapsedSeconds / 1.5f),
+			_ => 1f
 		};
-		if (1 == 0)
-		{
-		}
-		return result;
-	}
 
-	public float GetGlowStrength()
-	{
-		MeditationPhase phase = State.Phase;
-		if (1 == 0)
+	public float GetGlowStrength() =>
+		State.Phase switch
 		{
-		}
-		float result = phase switch
-		{
-			MeditationPhase.Inhale => 0.4f + 0.4f * (State.PhaseElapsedSeconds / 1.5f), 
-			MeditationPhase.Hold => 0.85f, 
-			MeditationPhase.Exhale => 0.85f - 0.4f * (State.PhaseElapsedSeconds / 1.5f), 
-			_ => 0f, 
+			MeditationPhase.Inhale => 0.4f + 0.4f * (State.PhaseElapsedSeconds / 1.5f),
+			MeditationPhase.Hold => 0.85f,
+			MeditationPhase.Exhale => 0.85f - 0.4f * (State.PhaseElapsedSeconds / 1.5f),
+			_ => 0f
 		};
-		if (1 == 0)
-		{
-		}
-		return result;
-	}
 
 	public void Reset()
 	{

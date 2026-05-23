@@ -20,6 +20,16 @@ public static class PlatformPaths
 		return Path.Combine(path, "satori", "saves");
 	}
 
+	public static string GetConfigDirectory()
+	{
+		return Path.GetDirectoryName(GetSaveDirectory()) ?? GetSaveDirectory();
+	}
+
+	public static string GetLauncherConfigPath()
+	{
+		return Path.Combine(GetConfigDirectory(), "launcher.json");
+	}
+
 	public static string GetDefaultSaveFilePath()
 	{
 		return Path.Combine(GetSaveDirectory(), "save_v1.json");

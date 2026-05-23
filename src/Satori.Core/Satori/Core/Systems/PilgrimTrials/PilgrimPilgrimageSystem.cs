@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Linq;
 using Satori.Core.Interfaces.Events;
 using Satori.Core.Interfaces.Events.Events;
-using Satori.Core.Interfaces.Systems;
 using Satori.Core.Models.PilgrimTrials;
 using Satori.Core.Models.Progression;
 using Satori.Core.Models.Save;
@@ -14,7 +12,7 @@ using Satori.Core.Systems.Wisdom;
 
 namespace Satori.Core.Systems.PilgrimTrials;
 
-public sealed class PilgrimPilgrimageSystem : IPilgrimPilgrimageSystem
+public sealed class PilgrimPilgrimageSystem
 {
 	private readonly IGameEventBus _eventBus;
 
@@ -34,8 +32,6 @@ public sealed class PilgrimPilgrimageSystem : IPilgrimPilgrimageSystem
 
 	private readonly GardenPlantingSystem _gardenPlanting;
 
-	private readonly LotusCatalog _lotusCatalog;
-
 	private PilgrimPilgrimageDefinition? _definition;
 
 	private PlayerMetaState? _meta;
@@ -48,7 +44,7 @@ public sealed class PilgrimPilgrimageSystem : IPilgrimPilgrimageSystem
 
 	public TrialRunState Run { get; } = new TrialRunState();
 
-	public PilgrimPilgrimageSystem(IGameEventBus eventBus, TrialTimerSystem timer, TrialRunSystem runSystem, SegmentTransitionSystem segmentTransition, TrapSystem trapSystem, DecoyTrailSystem decoySystem, PreceptViolationSystem preceptSystem, KarmaSystem karmaSystem, GardenPlantingSystem gardenPlanting, LotusCatalog lotusCatalog)
+	public PilgrimPilgrimageSystem(IGameEventBus eventBus, TrialTimerSystem timer, TrialRunSystem runSystem, SegmentTransitionSystem segmentTransition, TrapSystem trapSystem, DecoyTrailSystem decoySystem, PreceptViolationSystem preceptSystem, KarmaSystem karmaSystem, GardenPlantingSystem gardenPlanting)
 	{
 		_eventBus = eventBus;
 		_timer = timer;
@@ -59,7 +55,6 @@ public sealed class PilgrimPilgrimageSystem : IPilgrimPilgrimageSystem
 		_preceptSystem = preceptSystem;
 		_karmaSystem = karmaSystem;
 		_gardenPlanting = gardenPlanting;
-		_lotusCatalog = lotusCatalog;
 		_eventBus.Subscribe<TrialTimerExpiredEvent>(delegate
 		{
 			HandleTimerExpired();
@@ -170,8 +165,8 @@ public sealed class PilgrimPilgrimageSystem : IPilgrimPilgrimageSystem
 		{
 			_runSystem.CommitRunToMeta(Run, _meta);
 			WisdomCommitSystem.CommitRunQuotes(Run, _wisdom);
-			WisdomCommitSystem.CommitRunLotuses(Run, _meta, _definition);
-			_gardenPlanting.PlantCollectedLotuses(_meta, Run.CollectedLotusIds, _lotusCatalog, DateTimeOffset.UtcNow);
+			WisdomCommitSystem.CommitRunLotuses(Run, _meta);
+			_gardenPlanting.PlantCollectedLotuses(_meta, Run.CollectedLotusIds, DateTimeOffset.UtcNow);
 			EnlightenmentSystem.Recalculate(_meta);
 			if (_pilgrimageSave != null)
 			{
@@ -187,6 +182,14 @@ public sealed class PilgrimPilgrimageSystem : IPilgrimPilgrimageSystem
 		{
 			return null;
 		}
-		return _definition.Segments.FirstOrDefault((TrialSegmentDefinition s) => s.SegmentIndex == Run.CurrentSegmentIndex);
+		foreach (TrialSegmentDefinition segment in _definition.Segments)
+		{
+			if (segment.SegmentIndex == Run.CurrentSegmentIndex)
+			{
+				return segment;
+			}
+		}
+
+		return null;
 	}
 }

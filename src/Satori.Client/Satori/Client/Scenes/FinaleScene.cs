@@ -89,7 +89,7 @@ public sealed class FinaleScene : IScene
 		}
 
 		_context.Session.Save.Pilgrimage.FinaleCompleted = true;
-		_context.Services.GetRequiredService<ISaveLoadService>().SaveDefault(_context.Session.Save);
+		_context.PersistSave();
 		_context.SceneManager.ChangeTo(GameStateType.Hub);
 	}
 }

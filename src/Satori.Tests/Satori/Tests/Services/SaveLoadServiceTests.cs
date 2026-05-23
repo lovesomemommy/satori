@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using Satori.Core.Models.Lotus;
 using Satori.Core.Models.Progression;
 using Satori.Core.Models.Save;
 using Satori.Core.Models.Settings;
@@ -33,8 +32,7 @@ public sealed class SaveLoadServiceTests
 					{
 						new QuoteModel
 						{
-							QuoteId = "quote.01",
-							Rarity = QuoteRarity.Common
+							QuoteId = "quote.01"
 						}
 					}
 				},
@@ -58,7 +56,7 @@ public sealed class SaveLoadServiceTests
 			};
 			jsonSaveRepository.SaveAtomic(text, model);
 			SaveGameModel saveGameModel = jsonSaveRepository.Load(text);
-			Assert.Equal(1, saveGameModel.Version);
+			Assert.Equal(SaveSchemaVersion.Current, saveGameModel.Version);
 			Assert.Equal(15, saveGameModel.Meta.Karma);
 			Assert.True(saveGameModel.Meta.PilgrimageCompleted);
 			Assert.Single(saveGameModel.Wisdom.Quotes);
@@ -91,7 +89,7 @@ public sealed class SaveLoadServiceTests
 	public void SaveLoadService_RoundTrip_PreservesGarden()
 	{
 		var repository = new JsonSaveRepository();
-		var service = new SaveLoadService(repository);
+		var service = new SaveLoadService();
 		string path = Path.Combine(Path.GetTempPath(), $"satori_garden_{Guid.NewGuid():N}.json");
 		try
 		{
@@ -100,7 +98,6 @@ public sealed class SaveLoadServiceTests
 			{
 				SlotIndex = 0,
 				LotusId = 2,
-				LotusType = LotusType.Common,
 				PlantedAt = DateTimeOffset.UtcNow
 			});
 			original.Meta.UnlockedLotusIds.Add(2);
@@ -128,7 +125,7 @@ public sealed class SaveLoadServiceTests
 	[Fact]
 	public void ResetProgress_PreservesSettings_ClearsMeta()
 	{
-		var service = new SaveLoadService(new JsonSaveRepository());
+		var service = new SaveLoadService();
 		var original = new SaveGameModel();
 		original.Meta.Karma = 42;
 		original.Meta.PilgrimageCompleted = true;

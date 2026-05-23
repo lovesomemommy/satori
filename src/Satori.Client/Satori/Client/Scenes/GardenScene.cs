@@ -61,7 +61,8 @@ public sealed class GardenScene : IScene
 			glowPhase,
 			gardenOrigin,
 			_context.GardenSprites.FloorTile,
-			_context.PilgrimSprites.Lotus);
+			_context.PilgrimSprites.Lotus,
+			_context.PilgrimSprites.WallTile);
 
 		string title = _context.Localization.Get("hub.garden.title");
 		_context.Text.DrawText(_context.SpriteBatch, title, new Vector2(12, 8), UiPalette.TextPrimary);

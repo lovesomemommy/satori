@@ -7,6 +7,7 @@ using Satori.Client.Input;
 using Satori.Client.Scenes;
 using Satori.Client.Services.Audio;
 using Satori.Client.State;
+using Satori.Client.UI;
 using Satori.Client.Views.Rendering;
 using Satori.Core.Composition;
 using Satori.Core.Interfaces.Services;
@@ -31,11 +32,12 @@ public sealed class SatoriGame : Game
 
 	private SceneContext? _sceneContext;
 
-	public SatoriGame()
+	public SatoriGame(GameLaunchOptions? launchOptions = null)
 	{
 		_graphics = new GraphicsDeviceManager(this);
 		base.Content.RootDirectory = "Content";
 		ServiceCollection services = new ServiceCollection();
+		services.AddSingleton(launchOptions ?? GameLaunchOptions.Default);
 		services.AddSatoriCore();
 		services.AddSatoriClient();
 		_serviceProvider = services.BuildServiceProvider();
@@ -75,6 +77,8 @@ public sealed class SatoriGame : Game
 
 	protected override void Update(GameTime gameTime)
 	{
+		base.IsMouseVisible = true;
+		SdlNative.EnsureCursorVisible();
 		KeyboardState state = Keyboard.GetState();
 		if (_sceneContext != null)
 		{
@@ -89,7 +93,7 @@ public sealed class SatoriGame : Game
 
 	protected override void Draw(GameTime gameTime)
 	{
-		base.GraphicsDevice.Clear(new Color(18, 22, 32));
+		base.GraphicsDevice.Clear(new Color(18, 18, 22));
 		if (_sceneContext == null || _pixel == null)
 		{
 			base.Draw(gameTime);
@@ -98,7 +102,43 @@ public sealed class SatoriGame : Game
 		_spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullNone, null, _viewport.GetTransformMatrix());
 		_sceneContext.SceneManager.Draw(gameTime);
 		_spriteBatch.End();
+		DrawLetterboxBars();
 		base.Draw(gameTime);
+	}
+
+	private void DrawLetterboxBars()
+	{
+		if (_pixel == null)
+		{
+			return;
+		}
+
+		var letterbox = _viewport.LetterboxBounds;
+		int backbufferWidth = base.GraphicsDevice.PresentationParameters.BackBufferWidth;
+		int backbufferHeight = base.GraphicsDevice.PresentationParameters.BackBufferHeight;
+		var background = UiPalette.Background;
+		_spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullNone);
+		if (letterbox.Y > 0)
+		{
+			_spriteBatch.Draw(_pixel, new Rectangle(0, 0, backbufferWidth, letterbox.Y), background);
+		}
+
+		if (letterbox.Bottom < backbufferHeight)
+		{
+			_spriteBatch.Draw(_pixel, new Rectangle(0, letterbox.Bottom, backbufferWidth, backbufferHeight - letterbox.Bottom), background);
+		}
+
+		if (letterbox.X > 0)
+		{
+			_spriteBatch.Draw(_pixel, new Rectangle(0, letterbox.Y, letterbox.X, letterbox.Height), background);
+		}
+
+		if (letterbox.Right < backbufferWidth)
+		{
+			_spriteBatch.Draw(_pixel, new Rectangle(letterbox.Right, letterbox.Y, backbufferWidth - letterbox.Right, letterbox.Height), background);
+		}
+
+		_spriteBatch.End();
 	}
 
 	protected override void Dispose(bool disposing)

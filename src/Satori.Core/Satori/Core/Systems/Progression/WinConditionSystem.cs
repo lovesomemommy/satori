@@ -31,8 +31,14 @@ public static class WinConditionSystem
 		{
 			PilgrimageCompleted = save.Meta.PilgrimageCompleted,
 			GardenFull = save.Meta.PlantedLotuses.Count >= GardenPlantingSystem.MaxSlots,
-			WisdomGathered = save.Wisdom.Quotes.Count >= RequiredQuoteCount,
+			WisdomGathered = CountDistinctCanonicalQuotes(save) >= RequiredQuoteCount,
 			EnlightenmentReached = save.Meta.Enlightenment >= RequiredEnlightenment
 		};
 	}
+
+	public static int CountDistinctCanonicalQuotes(SaveGameModel save) =>
+		save.Wisdom.Quotes
+			.Select(quote => quote.QuoteId)
+			.Distinct(StringComparer.Ordinal)
+			.Count();
 }

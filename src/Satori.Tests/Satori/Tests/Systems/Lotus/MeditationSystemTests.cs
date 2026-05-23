@@ -18,8 +18,7 @@ public sealed class MeditationSystemTests
 		TrialRunState trialRunState = new TrialRunState();
 		LotusModel lotus = new LotusModel
 		{
-			Id = 1,
-			Type = LotusType.Common
+			Id = 1
 		};
 		Assert.True(meditationSystem.TryBegin(trialRunState, lotus));
 		meditationSystem.Update(trialRunState, 0.5f, meditateHold: false);
@@ -35,8 +34,7 @@ public sealed class MeditationSystemTests
 		TrialRunState run = new TrialRunState();
 		LotusModel lotus = new LotusModel
 		{
-			Id = 2,
-			Type = LotusType.Rare
+			Id = 2
 		};
 		bool completed = false;
 		gameEventBus.Subscribe<MeditationCompletedEvent>(delegate

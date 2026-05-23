@@ -288,8 +288,6 @@ public sealed class WheelOfDharmaScene : IScene
 				_context.Session.Meta,
 				_context.Session.Save.Precepts,
 				_context.Session.Save.Wisdom,
-				_context.Services.GetRequiredService<LotusCatalog>(),
-				_context.Services.GetRequiredService<QuoteCatalog>(),
 				_context.Services.GetRequiredService<GardenPlantingSystem>(),
 				DateTimeOffset.UtcNow);
 			SaveProgress();
@@ -436,14 +434,15 @@ public sealed class WheelOfDharmaScene : IScene
 		});
 		_screen.Add(new UiButton
 		{
-			Text = _context.Localization.Get("pilgrim.retry"),
-			Bounds = new Rectangle(12, 152, 120, 18),
+			Text = _context.Localization.Get("minigames.wheel.retry"),
+			Bounds = new Rectangle(12, 152, 156, 18),
+			UseCompactFont = true,
 			OnClick = () => StartRound(difficulty)
 		});
 		_screen.Add(new UiButton
 		{
 			Text = _context.Localization.Get("minigames.wheel.choose_level"),
-			Bounds = new Rectangle(140, 152, 120, 18),
+			Bounds = new Rectangle(172, 152, 120, 18),
 			OnClick = () =>
 			{
 				_shortenNextRound = failed;
@@ -460,6 +459,6 @@ public sealed class WheelOfDharmaScene : IScene
 			return;
 		}
 
-		_context.Services.GetRequiredService<ISaveLoadService>().SaveDefault(_context.Session.Save);
+		_context.PersistSave();
 	}
 }

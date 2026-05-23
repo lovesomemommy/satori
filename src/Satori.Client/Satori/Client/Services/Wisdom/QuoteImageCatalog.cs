@@ -37,7 +37,7 @@ public sealed class QuoteImageCatalog : IDisposable
 		if (!_initialized)
 		{
 			_graphicsDevice = graphicsDevice;
-			var fontPath = ResolveFontPath();
+			var fontPath = FontPathResolver.ResolveQuotePlaceholderFontPath();
 			if (fontPath != null && File.Exists(fontPath))
 			{
 				_fontSystem.AddFont(File.ReadAllBytes(fontPath));
@@ -83,22 +83,7 @@ public sealed class QuoteImageCatalog : IDisposable
 			return null;
 		}
 
-		foreach (string candidatePath in GetCandidatePaths(quoteId))
-		{
-			if (!File.Exists(candidatePath))
-			{
-				continue;
-			}
-			try
-			{
-				return TextureLoadHelper.FromFile(graphicsDevice, candidatePath);
-			}
-			catch (Exception)
-			{
-				return null;
-			}
-		}
-		return null;
+		return TextureLoadHelper.TryLoadFirstExisting(graphicsDevice, ClientAssetPaths.QuoteImageById(quoteId));
 	}
 
 	private Texture2D CreatePlaceholder(string quoteId)
@@ -156,49 +141,5 @@ public sealed class QuoteImageCatalog : IDisposable
 		{
 			_placeholderFont.DrawText(spriteBatch, text2, new Vector2(bounds.X, num), new Color(230, 225, 210), 0f, default(Vector2), null);
 		}
-	}
-
-	private static IEnumerable<string> GetCandidatePaths(string quoteId)
-	{
-		string fileName = quoteId + ".png";
-		yield return Path.Combine(AppContext.BaseDirectory, "QuoteImages", fileName);
-		yield return Path.Combine(AppContext.BaseDirectory, "assets", "quotes", fileName);
-	}
-
-	private static string? ResolveFontPath()
-	{
-		string text = Path.Combine(AppContext.BaseDirectory, "Fonts", "DejaVuSans.ttf");
-		if (File.Exists(text))
-		{
-			return text;
-		}
-		if (OperatingSystem.IsWindows())
-		{
-			string text2 = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Fonts), "arial.ttf");
-			if (File.Exists(text2))
-			{
-				return text2;
-			}
-		}
-		if (OperatingSystem.IsMacOS())
-		{
-			string text3 = "/System/Library/Fonts/Supplemental/Arial.ttf";
-			if (File.Exists(text3))
-			{
-				return text3;
-			}
-		}
-		if (OperatingSystem.IsLinux())
-		{
-			string[] array = new string[2] { "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", "/usr/share/fonts/TTF/DejaVuSans.ttf" };
-			foreach (string text4 in array)
-			{
-				if (File.Exists(text4))
-				{
-					return text4;
-				}
-			}
-		}
-		return null;
 	}
 }

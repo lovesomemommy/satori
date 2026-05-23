@@ -55,6 +55,7 @@
   "minigames.wheel.success": "Верно! Карма +{0}.",
   "minigames.wheel.fail": "Ошибка. Карма -{0}.",
   "minigames.wheel.choose_level": "Уровни",
+  "minigames.wheel.retry": "Попробовать снова",
   "minigames.wheel.follow": "следуй за стрелками",
   "minigames.meditation.training.hint": "Удерживай Space, чтобы начать",
   "minigames.meditation.training.inhale": "глубокий вдох",

@@ -12,13 +12,22 @@ public static class WheelOfDharmaView
 
 	private const int PadSize = 48;
 
-	private const int EdgeOverlap = 12;
+	private const int ArmGap = 4;
 
 	private static readonly Point PadOrigin = new(136, 80);
 
 	public static Rectangle PadCenter => new(PadOrigin.X, PadOrigin.Y, PadSize, PadSize);
 
-	public static readonly Rectangle SequenceBar = new Rectangle(96, 138, 128, 10);
+	public static Rectangle GetSequenceBarBounds()
+	{
+		var pad = PadCenter;
+		const int barHeight = 8;
+		const int bottomInset = 3;
+		int width = pad.Width - 8;
+		int x = pad.X + (pad.Width - width) / 2;
+		int y = pad.Bottom - bottomInset - barHeight;
+		return new Rectangle(x, y, width, barHeight);
+	}
 
 	public static Rectangle GetDirectionButtonBounds(WheelDirection direction)
 	{
@@ -27,10 +36,10 @@ public static class WheelOfDharmaView
 		int centeredY = pad.Y + (PadSize - ButtonSize) / 2;
 		return direction switch
 		{
-			WheelDirection.Up => new Rectangle(centeredX, pad.Y + EdgeOverlap - ButtonSize, ButtonSize, ButtonSize),
-			WheelDirection.Down => new Rectangle(centeredX, pad.Bottom - EdgeOverlap, ButtonSize, ButtonSize),
-			WheelDirection.Left => new Rectangle(pad.X + EdgeOverlap - ButtonSize, centeredY, ButtonSize, ButtonSize),
-			_ => new Rectangle(pad.Right - EdgeOverlap, centeredY, ButtonSize, ButtonSize)
+			WheelDirection.Up => new Rectangle(centeredX, pad.Y - ButtonSize - ArmGap, ButtonSize, ButtonSize),
+			WheelDirection.Down => new Rectangle(centeredX, pad.Bottom + ArmGap, ButtonSize, ButtonSize),
+			WheelDirection.Left => new Rectangle(pad.X - ButtonSize - ArmGap, centeredY, ButtonSize, ButtonSize),
+			_ => new Rectangle(pad.Right + ArmGap, centeredY, ButtonSize, ButtonSize)
 		};
 	}
 
@@ -71,7 +80,8 @@ public static class WheelOfDharmaView
 		WheelOfDharmaState state,
 		float glowPhase)
 	{
-		spriteBatch.Draw(pixel, SequenceBar, UiPalette.Panel);
+		var sequenceBar = GetSequenceBarBounds();
+		spriteBatch.Draw(pixel, sequenceBar, UiPalette.Panel);
 		int count = state.Sequence.Count;
 		if (count == 0)
 		{
@@ -79,10 +89,10 @@ public static class WheelOfDharmaView
 		}
 
 		int dotGap = 4;
-		int dotSize = Math.Min(8, (SequenceBar.Width - (count - 1) * dotGap) / count);
+		int dotSize = Math.Min(6, (sequenceBar.Width - (count - 1) * dotGap) / count);
 		int totalWidth = count * dotSize + (count - 1) * dotGap;
-		int startX = SequenceBar.X + (SequenceBar.Width - totalWidth) / 2;
-		int dotY = SequenceBar.Y + (SequenceBar.Height - dotSize) / 2;
+		int startX = sequenceBar.X + (sequenceBar.Width - totalWidth) / 2;
+		int dotY = sequenceBar.Y + (sequenceBar.Height - dotSize) / 2;
 		for (int i = 0; i < count; i++)
 		{
 			var dot = new Rectangle(startX + i * (dotSize + dotGap), dotY, dotSize, dotSize);

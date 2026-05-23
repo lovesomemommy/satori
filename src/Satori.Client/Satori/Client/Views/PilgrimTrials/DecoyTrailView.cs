@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Satori.Client.UI;
@@ -28,6 +28,7 @@ public static class DecoyTrailView
 		double totalSeconds)
 	{
 		float time = (float)totalSeconds;
+		var trapTiles = BuildTrapTileSet(segment);
 		foreach (var decoyTrail in segment.DecoyTrails)
 		{
 			if (decoyTrail.Path.Count == 0)
@@ -39,7 +40,7 @@ public static class DecoyTrailView
 			for (var i = 0; i < decoyTrail.Path.Count; i++)
 			{
 				var tilePoint = decoyTrail.Path[i];
-				if (IsTrapTile(segment, tilePoint.X, tilePoint.Y))
+				if (trapTiles.Contains((tilePoint.X, tilePoint.Y)))
 				{
 					continue;
 				}
@@ -48,6 +49,11 @@ public static class DecoyTrailView
 				var tile = SegmentLayoutView.TileRect(tilePoint.X, tilePoint.Y);
 				float bob = MathF.Sin(time * 4f + i * 0.9f) * 1.2f;
 				tile.Offset(0, (int)MathF.Round(bob));
+				bool isHead = i == headIndex;
+				float trailProgress = decoyTrail.Path.Count <= 1
+					? 1f
+					: i / (float)(decoyTrail.Path.Count - 1);
+				float fadePulse = 0.55f + 0.45f * MathF.Sin(time * 3.2f - i * 0.55f);
 				if (footprintSprite != null)
 				{
 					DrawFootprintSprite(
@@ -56,7 +62,9 @@ public static class DecoyTrailView
 						tile,
 						direction,
 						isLeftFoot: i % 2 == 0,
-						isHead: i == headIndex);
+						isHead,
+						trailProgress,
+						fadePulse);
 				}
 				else
 				{
@@ -66,7 +74,7 @@ public static class DecoyTrailView
 						tile,
 						direction,
 						isLeftFoot: i % 2 == 0,
-						isHead: i == headIndex,
+						isHead,
 						time,
 						i);
 				}
@@ -74,8 +82,16 @@ public static class DecoyTrailView
 		}
 	}
 
-	private static bool IsTrapTile(TrialSegmentDefinition segment, int tileX, int tileY) =>
-		segment.Traps.Any(trap => trap.Tile.X == tileX && trap.Tile.Y == tileY);
+	private static HashSet<(int X, int Y)> BuildTrapTileSet(TrialSegmentDefinition segment)
+	{
+		var trapTiles = new HashSet<(int X, int Y)>();
+		foreach (TrapModel trap in segment.Traps)
+		{
+			trapTiles.Add((trap.Tile.X, trap.Tile.Y));
+		}
+
+		return trapTiles;
+	}
 
 	private static TrailDirection ResolveDirection(IReadOnlyList<TilePoint> path, int index)
 	{
@@ -113,7 +129,9 @@ public static class DecoyTrailView
 		Rectangle tile,
 		TrailDirection direction,
 		bool isLeftFoot,
-		bool isHead)
+		bool isHead,
+		float trailProgress,
+		float fadePulse)
 	{
 		float rotation = direction switch
 		{
@@ -123,11 +141,16 @@ public static class DecoyTrailView
 			_ => -MathF.PI / 2f
 		};
 		var effects = isLeftFoot ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-		var tint = isHead ? new Color(245, 210, 220) : new Color(150, 145, 138);
+		float alpha = isHead ? 1f : 0.45f + 0.35f * trailProgress;
+		alpha *= fadePulse;
+		var tint = isHead
+			? new Color(255, 220, 230) * alpha
+			: new Color(190, 175, 168) * alpha;
 		var destination = new Rectangle(tile.X + 1, tile.Y + 1, tile.Width - 2, tile.Height - 2);
 		var origin = new Vector2(footprintSprite.Width / 2f, footprintSprite.Height / 2f);
 		var position = new Vector2(destination.X + destination.Width / 2f, destination.Y + destination.Height / 2f);
-		float scale = Math.Min(destination.Width / (float)footprintSprite.Width, destination.Height / (float)footprintSprite.Height);
+		float baseScale = Math.Min(destination.Width / (float)footprintSprite.Width, destination.Height / (float)footprintSprite.Height);
+		float scale = isHead ? baseScale * (1f + 0.08f * MathF.Sin(fadePulse * 6f)) : baseScale;
 		spriteBatch.Draw(
 			footprintSprite,
 			position,

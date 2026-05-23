@@ -11,16 +11,15 @@ public static class WisdomCommitSystem
 	{
 		foreach (QuoteModel quote in run.UnlockedQuotes)
 		{
-			if (wisdom.Quotes.All((QuoteModel existing) => existing.QuoteId != quote.QuoteId))
+			if (wisdom.Quotes.All(existing => existing.QuoteId != quote.QuoteId))
 			{
 				wisdom.Quotes.Add(quote);
 			}
 		}
 	}
 
-	public static void CommitRunLotuses(TrialRunState run, PlayerMetaState meta, PilgrimPilgrimageDefinition? definition)
+	public static void CommitRunLotuses(TrialRunState run, PlayerMetaState meta)
 	{
-		_ = definition;
 		foreach (int collectedLotusId in run.CollectedLotusIds)
 		{
 			meta.UnlockedLotusIds.Add(collectedLotusId);

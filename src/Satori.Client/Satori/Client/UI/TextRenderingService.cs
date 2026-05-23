@@ -1,8 +1,7 @@
-﻿using System;
-using System.IO;
-using FontStashSharp;
+﻿using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Satori.Client.Views.Rendering;
 
 namespace Satori.Client.UI;
 
@@ -29,7 +28,7 @@ public sealed class TextRenderingService : IDisposable
 	{
 		if (!_initialized)
 		{
-			string? fontPath = ResolveFontPath();
+			string? fontPath = FontPathResolver.ResolveUiFontPath();
 			if (fontPath != null && File.Exists(fontPath))
 			{
 				_fontSystem.AddFont(File.ReadAllBytes(fontPath));
@@ -176,70 +175,5 @@ public sealed class TextRenderingService : IDisposable
 	{
 		var shadow = new Vector2(position.X + 1f, position.Y + 1f);
 		font.DrawText(spriteBatch, text, shadow, new Color(0, 0, 0, 120), 0f, default(Vector2), null);
-	}
-
-	private static string? ResolveFontPath()
-	{
-		string bundledPixel = Path.Combine(AppContext.BaseDirectory, "Fonts", "PressStart2P-Regular.ttf");
-		if (File.Exists(bundledPixel))
-		{
-			return bundledPixel;
-		}
-
-		string bundled = Path.Combine(AppContext.BaseDirectory, "Fonts", "DejaVuSansMono.ttf");
-		if (File.Exists(bundled))
-		{
-			return bundled;
-		}
-
-		if (OperatingSystem.IsWindows())
-		{
-			string[] windowsCandidates =
-			[
-				Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Fonts), "consola.ttf"),
-				Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Fonts), "cour.ttf")
-			];
-			foreach (string candidate in windowsCandidates)
-			{
-				if (File.Exists(candidate))
-				{
-					return candidate;
-				}
-			}
-		}
-
-		if (OperatingSystem.IsMacOS())
-		{
-			string[] macCandidates =
-			[
-				"/System/Library/Fonts/Supplemental/Courier New.ttf",
-				"/System/Library/Fonts/Menlo.ttc"
-			];
-			foreach (string candidate in macCandidates)
-			{
-				if (File.Exists(candidate))
-				{
-					return candidate;
-				}
-			}
-		}
-
-		if (OperatingSystem.IsLinux())
-		{
-			string[] linuxCandidates =
-			[
-				"/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf",
-				"/usr/share/fonts/TTF/DejaVuSansMono.ttf"
-			];
-			foreach (string candidate in linuxCandidates)
-			{
-				if (File.Exists(candidate))
-				{
-					return candidate;
-				}
-			}
-		}
-
-		return null;
 	}
 }

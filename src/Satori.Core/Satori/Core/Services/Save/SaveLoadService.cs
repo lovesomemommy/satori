@@ -9,12 +9,7 @@ namespace Satori.Core.Services.Save;
 
 public sealed class SaveLoadService : ISaveLoadService
 {
-	private readonly ISaveRepository _repository;
-
-	public SaveLoadService(ISaveRepository repository)
-	{
-		_repository = repository;
-	}
+	private readonly JsonSaveRepository _repository = new();
 
 	public string DefaultSavePath => PlatformPaths.GetDefaultSaveFilePath();
 
@@ -40,10 +35,7 @@ public sealed class SaveLoadService : ISaveLoadService
 
 	public SaveGameModel ResetProgress(SaveGameModel current)
 	{
-		var fresh = new SaveGameModel
-		{
-			Settings = CopySettings(current.Settings)
-		};
+		var fresh = new SaveGameModel { Settings = CopySettings(current.Settings) };
 		SaveDefault(fresh);
 		return fresh;
 	}
@@ -74,12 +66,12 @@ public sealed class SaveLoadService : ISaveLoadService
 
 	private static bool NormalizeBindings(InputBindingModel bindings)
 	{
-		if (string.Equals(bindings.Pause, "P", StringComparison.OrdinalIgnoreCase))
+		if (!string.Equals(bindings.Pause, "P", StringComparison.OrdinalIgnoreCase))
 		{
-			bindings.Pause = "Escape";
-			return true;
+			return false;
 		}
 
-		return false;
+		bindings.Pause = "Escape";
+		return true;
 	}
 }

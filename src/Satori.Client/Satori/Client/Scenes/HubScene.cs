@@ -144,27 +144,23 @@ public sealed class HubScene : IScene
 			panelHeight);
 		_finaleHintCloseBounds = new Rectangle(_finaleHintPanelBounds.Right - 14, _finaleHintPanelBounds.Y + 3, 12, 12);
 
-		_context.SpriteBatch.Draw(
-			_context.Pixel,
-			new Rectangle(0, 0, virtualWidth, virtualHeight),
-			new Color(0, 0, 0, 120));
-		_context.SpriteBatch.Draw(_context.Pixel, _finaleHintPanelBounds, new Color(10, 10, 14, 175));
-		_context.SpriteBatch.Draw(_context.Pixel, _finaleHintCloseBounds, new Color(32, 32, 36, 200));
+		_context.SpriteBatch.Draw(_context.Pixel, _finaleHintPanelBounds, new Color(255, 255, 255, 110));
+		_context.SpriteBatch.Draw(_context.Pixel, _finaleHintCloseBounds, new Color(255, 255, 255, 190));
 		_context.Text.DrawText(
 			_context.SpriteBatch,
 			"x",
 			new Vector2(_finaleHintCloseBounds.X + 3, _finaleHintCloseBounds.Y + 1),
-			UiPalette.TextPrimary,
+			new Color(58, 42, 82),
 			compact: true);
 
 		int y = _finaleHintPanelBounds.Y + 8;
-		foreach (var (text, color) in _finaleHintLines)
+		foreach (var (text, _) in _finaleHintLines)
 		{
 			_context.Text.DrawText(
 				_context.SpriteBatch,
 				text,
 				new Vector2(_finaleHintPanelBounds.X + 6, y),
-				color,
+				new Color(58, 42, 82),
 				compact: true);
 			y += lineHeight + linePadding;
 		}
@@ -178,7 +174,7 @@ public sealed class HubScene : IScene
 		}
 
 		_karmaText = string.Format(_context.Localization.Get("hub.karma"), _context.Session.Meta.Karma);
-		_isNight = HubAmbienceSystem.IsNight(_context.Session.Meta);
+		_isNight = EnlightenmentSystem.IsNight(_context.Session.Meta);
 	}
 
 	private void TryOpenFinale()
@@ -225,7 +221,7 @@ public sealed class HubScene : IScene
 		_finaleHintLines.Add((
 			string.Format(
 				_context.Localization.Get("hub.finale.progress.wisdom"),
-				save.Wisdom.Quotes.Count,
+				WinConditionSystem.CountDistinctCanonicalQuotes(save),
 				WinConditionSystem.RequiredQuoteCount),
 			status.WisdomGathered ? UiPalette.TextPrimary : UiPalette.TextMuted));
 		_finaleHintLines.Add((

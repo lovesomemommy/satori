@@ -1,6 +1,7 @@
 ﻿using Satori.Core.Interfaces.Events.Events;
 using Satori.Core.Models.Lotus;
 using Satori.Core.Models.PilgrimTrials;
+using Satori.Core.Models.Progression;
 using Satori.Core.Systems.Lotus;
 using Satori.Core.Systems.Progression;
 using Satori.Core.Utilities;
@@ -19,10 +20,9 @@ public sealed class LotusCollectionSystemTests
 		TrialRunState trialRunState = new TrialRunState();
 		LotusModel lotus = new LotusModel
 		{
-			Id = 1,
-			Type = LotusType.Rare
+			Id = 1
 		};
-		LotusCollectedEvent published = null;
+		LotusCollectedEvent? published = null;
 		gameEventBus.Subscribe(delegate(LotusCollectedEvent e)
 		{
 			published = e;
@@ -30,9 +30,9 @@ public sealed class LotusCollectionSystemTests
 		bool condition = lotusCollectionSystem.TryCollect(trialRunState, lotus);
 		Assert.True(condition);
 		Assert.Contains(1, trialRunState.CollectedLotusIds);
-		Assert.Equal(3, trialRunState.RunKarma);
+		Assert.Equal(KarmaValues.LotusCollectReward, trialRunState.RunKarma);
 		Assert.NotNull(published);
-		Assert.Equal(LotusType.Rare, published.Type);
+		Assert.Equal(1, published.LotusId);
 	}
 
 	[Fact]
@@ -43,8 +43,7 @@ public sealed class LotusCollectionSystemTests
 		TrialRunState trialRunState = new TrialRunState();
 		LotusModel lotus = new LotusModel
 		{
-			Id = 1,
-			Type = LotusType.Common
+			Id = 1
 		};
 		trialRunState.CollectedLotusIds.Add(1);
 		Assert.False(lotusCollectionSystem.TryCollect(trialRunState, lotus));

@@ -14,6 +14,11 @@ internal static class SdlNative
 	[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 	private delegate void StopTextInputDelegate();
 
+	[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+	private delegate int ShowCursorDelegate(int toggle);
+
+	private static nint _showCursor;
+
 	private const int ScancodeA = 4;
 
 	private const int ScancodeD = 7;
@@ -65,7 +70,20 @@ internal static class SdlNative
 		{
 			SetHint("SDL_IME_SHOW_UI", "0");
 			SetHint("SDL_IME_INTERNAL", "0");
+			SetHint("SDL_HINT_WINDOWS_NO_IME_SHOW_UI", "1");
+			SetHint("SDL_HINT_MOUSE_RELATIVE_MODE_WARPS", "0");
 			StopTextInput();
+			ShowCursor();
+		}
+	}
+
+	public static void EnsureCursorVisible()
+	{
+		EnsureLoaded();
+		if (_available)
+		{
+			StopTextInput();
+			ShowCursor();
 		}
 	}
 
@@ -122,6 +140,9 @@ internal static class SdlNative
 				_getKeyboardState = NativeLibrary.GetExport(library, "SDL_GetKeyboardState");
 				_setHint = NativeLibrary.GetExport(library, "SDL_SetHint");
 				_stopTextInput = NativeLibrary.GetExport(library, "SDL_StopTextInput");
+				_showCursor = NativeLibrary.TryGetExport(library, "SDL_ShowCursor", out var showCursor)
+					? showCursor
+					: IntPtr.Zero;
 				_available = _getKeyboardState != IntPtr.Zero;
 			}
 		}
@@ -169,6 +190,15 @@ internal static class SdlNative
 		{
 			StopTextInputDelegate delegateForFunctionPointer = Marshal.GetDelegateForFunctionPointer<StopTextInputDelegate>(_stopTextInput);
 			delegateForFunctionPointer();
+		}
+	}
+
+	private static void ShowCursor()
+	{
+		if (_showCursor != IntPtr.Zero)
+		{
+			ShowCursorDelegate delegateForFunctionPointer = Marshal.GetDelegateForFunctionPointer<ShowCursorDelegate>(_showCursor);
+			delegateForFunctionPointer(1);
 		}
 	}
 }

@@ -3,7 +3,6 @@ using System.IO;
 using Microsoft.Extensions.DependencyInjection;
 using Satori.Core.Interfaces.Events;
 using Satori.Core.Interfaces.Services;
-using Satori.Core.Interfaces.Systems;
 using Satori.Core.Services.Localization;
 using Satori.Core.Services.Minigames;
 using Satori.Core.Services.Save;
@@ -30,7 +29,6 @@ public static class CoreServiceCollectionExtensions
 		services.AddPreceptHandlers();
 		services.AddSingleton<KarmaSystem>();
 		services.AddSingleton<GardenPlantingSystem>();
-		services.AddSingleton((IServiceProvider _) => LotusCatalog.CreateDefault());
 		services.AddSingleton((IServiceProvider _) => QuoteCatalog.CreateDefault());
 		services.AddSingleton<QuoteUnlockSystem>();
 		services.AddSingleton<MeditationSystem>();
@@ -40,8 +38,6 @@ public static class CoreServiceCollectionExtensions
 		services.AddSingleton<WheelOfDharmaSystem>();
 		services.AddSingleton<LotusCollectionSystem>();
 		services.AddSingleton<PilgrimPilgrimageSystem>();
-		services.AddSingleton((Func<IServiceProvider, IPilgrimPilgrimageSystem>)((IServiceProvider sp) => sp.GetRequiredService<PilgrimPilgrimageSystem>()));
-		services.AddSingleton<ISaveRepository, JsonSaveRepository>();
 		services.AddSingleton<ISaveLoadService, SaveLoadService>();
 		services.AddSingleton((IServiceProvider _) => CreateDefaultLocalization());
 		return services;

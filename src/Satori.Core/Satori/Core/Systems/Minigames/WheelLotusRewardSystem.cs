@@ -16,13 +16,13 @@ public static class WheelLotusRewardSystem
 
 	public static int GetLotusIdForDifficulty(int difficulty) => FirstLotusId - 1 + difficulty;
 
+	public static string GetQuoteIdForDifficulty(int difficulty) => $"quote.lotus.{5 + difficulty:00}";
+
 	public static WheelLotusRewardOutcome TryGrantFirstClearReward(
 		int difficulty,
 		PlayerMetaState meta,
 		PreceptProgressModel progress,
 		WisdomLibraryState wisdom,
-		LotusCatalog lotusCatalog,
-		QuoteCatalog quoteCatalog,
 		GardenPlantingSystem gardenPlanting,
 		DateTimeOffset grantedAt)
 	{
@@ -32,21 +32,19 @@ public static class WheelLotusRewardSystem
 		}
 
 		int lotusId = GetLotusIdForDifficulty(difficulty);
+		string quoteId = GetQuoteIdForDifficulty(difficulty);
 		meta.UnlockedLotusIds.Add(lotusId);
-		string quoteId = quoteCatalog.GetQuoteIdForLotus(lotusId);
 		if (wisdom.Quotes.All(quote => quote.QuoteId != quoteId))
 		{
 			wisdom.Quotes.Add(new QuoteModel
 			{
 				QuoteId = quoteId,
-				Rarity = quoteCatalog.RarityForLotus(lotusCatalog.GetType(lotusId)),
 				FoundAt = grantedAt,
-				SourceSegmentIndex = -1,
-				SourceLotusType = lotusCatalog.GetType(lotusId)
+				SourceSegmentIndex = -1
 			});
 		}
 
-		gardenPlanting.PlantCollectedLotuses(meta, [lotusId], lotusCatalog, grantedAt);
+		gardenPlanting.PlantCollectedLotuses(meta, [lotusId], grantedAt);
 		EnlightenmentSystem.Recalculate(meta);
 		return new WheelLotusRewardOutcome
 		{

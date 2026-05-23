@@ -144,7 +144,6 @@ public sealed class PilgrimPilgrimageSystemTests
 			decoySystem,
 			preceptSystem,
 			new KarmaSystem(),
-			new GardenPlantingSystem(),
-			LotusCatalog.CreateDefault());
+			new GardenPlantingSystem());
 	}
 }

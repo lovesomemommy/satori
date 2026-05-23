@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Satori.Client.Services.Hub;
@@ -41,4 +42,7 @@ public sealed class SceneContext
 	public required PilgrimSpriteCatalog PilgrimSprites { get; init; }
 
 	public required GardenSpriteCatalog GardenSprites { get; init; }
+
+	public void PersistSave() =>
+		Services.GetRequiredService<ISaveLoadService>().SaveDefault(Session.Save);
 }

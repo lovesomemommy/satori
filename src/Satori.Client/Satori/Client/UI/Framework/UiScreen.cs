@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -8,23 +9,17 @@ namespace Satori.Client.UI.Framework;
 
 public sealed class UiScreen
 {
-	private readonly List<IUiElement> _elements = new List<IUiElement>();
+	private readonly List<UiElement> _elements = [];
 
-	public IReadOnlyList<IUiElement> Elements => _elements;
+	public IReadOnlyList<UiElement> Elements => _elements;
 
-	public void Add(IUiElement element)
-	{
-		_elements.Add(element);
-	}
+	public void Add(UiElement element) => _elements.Add(element);
 
-	public void Clear()
-	{
-		_elements.Clear();
-	}
+	public void Clear() => _elements.Clear();
 
 	public void ResetButtonPointerStates()
 	{
-		foreach (IUiElement element in _elements)
+		foreach (UiElement element in _elements)
 		{
 			if (element is UiButton button)
 			{
@@ -35,8 +30,9 @@ public sealed class UiScreen
 
 	public void Update(GameTime gameTime, MouseState mouse, KeyboardState keyboard)
 	{
+		// Snapshot: button handlers may rebuild the screen during Update.
 		var snapshot = _elements.ToArray();
-		foreach (IUiElement element in snapshot)
+		foreach (UiElement element in snapshot)
 		{
 			element.Update(gameTime, mouse, keyboard);
 		}
@@ -44,7 +40,7 @@ public sealed class UiScreen
 
 	public void Draw(SpriteBatch spriteBatch, Texture2D pixel, TextRenderingService text, float glowPhase)
 	{
-		foreach (IUiElement element in _elements)
+		foreach (UiElement element in _elements)
 		{
 			element.Draw(spriteBatch, pixel, text, glowPhase);
 		}

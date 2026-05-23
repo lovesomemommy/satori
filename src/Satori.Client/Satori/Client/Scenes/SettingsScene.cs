@@ -273,11 +273,6 @@ public sealed class SettingsScene : IScene
 		});
 		_resetOverlay.Add(new UiPanel
 		{
-			Bounds = new Rectangle(0, 0, 320, 180),
-			BackgroundColor = Color.Transparent
-		});
-		_resetOverlay.Add(new UiPanel
-		{
 			Bounds = new Rectangle(28, 36, 264, 116),
 			BackgroundColor = UiPalette.PanelDark
 		});
@@ -336,7 +331,7 @@ public sealed class SettingsScene : IScene
 		_awaitMouseReleaseAfterResetOpen = true;
 		_resetOverlayCooldownFrames = 12;
 		_resetOverlay.ResetButtonPointerStates();
-		foreach (IUiElement element in _screen.Elements)
+		foreach (UiElement element in _screen.Elements)
 		{
 			if (element is UiButton button)
 			{
@@ -430,6 +425,6 @@ public sealed class SettingsScene : IScene
 			return;
 		}
 
-		_context.Services.GetRequiredService<ISaveLoadService>().SaveDefault(_context.Session.Save);
+		_context.PersistSave();
 	}
 }

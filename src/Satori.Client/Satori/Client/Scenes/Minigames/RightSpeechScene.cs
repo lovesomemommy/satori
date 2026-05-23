@@ -60,7 +60,7 @@ public sealed class RightSpeechScene : IScene
 		if (progress.RightSpeechCatalogRevision != revisionBefore
 			|| progress.CompletedRightSpeechQuestionIds.Count != completedBefore)
 		{
-			context.Services.GetRequiredService<ISaveLoadService>().SaveDefault(context.Session.Save);
+			context.PersistSave();
 		}
 
 		_showCompletion = _rightSpeech.IsAllComplete(progress);
@@ -290,6 +290,6 @@ public sealed class RightSpeechScene : IScene
 			return;
 		}
 
-		_context.Services.GetRequiredService<ISaveLoadService>().SaveDefault(_context.Session.Save);
+		_context.PersistSave();
 	}
 }

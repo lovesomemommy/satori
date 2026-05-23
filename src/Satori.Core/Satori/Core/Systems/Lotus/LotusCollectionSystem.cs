@@ -25,8 +25,8 @@ public sealed class LotusCollectionSystem
 			return false;
 		}
 		run.CollectedLotusIds.Add(lotus.Id);
-		_karmaSystem.AddRunKarma(run, _karmaSystem.GetLotusKarma(lotus.Type));
-		_eventBus.Publish(new LotusCollectedEvent(lotus.Id, lotus.Type));
+		_karmaSystem.AddRunKarma(run, _karmaSystem.GetLotusKarma());
+		_eventBus.Publish(new LotusCollectedEvent(lotus.Id));
 		return true;
 	}
 }

@@ -17,4 +17,11 @@ public sealed class KarmaSystemTests
 		karmaSystem.ApplyMetaPenalty(playerMetaState, 5);
 		Assert.Equal(0, playerMetaState.Karma);
 	}
+
+	[Fact]
+	public void GetLotusKarma_ReturnsFlatReward()
+	{
+		var karmaSystem = new KarmaSystem();
+		Assert.Equal(KarmaValues.LotusCollectReward, karmaSystem.GetLotusKarma());
+	}
 }

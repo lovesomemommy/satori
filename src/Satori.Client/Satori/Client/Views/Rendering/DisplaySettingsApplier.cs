@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Satori.Client.Input;
 using Satori.Core.Models.Settings;
 
 namespace Satori.Client.Views.Rendering;
@@ -65,6 +66,7 @@ public sealed class DisplaySettingsApplier
 		}
 
 		_game.IsMouseVisible = true;
+		SdlNative.EnsureCursorVisible();
 		ApplyChangesSafely();
 	}
 
@@ -83,14 +85,14 @@ public sealed class DisplaySettingsApplier
 	public void Update(KeyboardState keyboard, GameSettingsModel settings)
 	{
 		bool f11Down = keyboard.IsKeyDown(Keys.F11);
-		if (f11Down && !_f11WasDown)
+		if (WasEdgePressed(f11Down, _f11WasDown))
 		{
 			ToggleFullscreen(settings);
 		}
 
 		_f11WasDown = f11Down;
 		bool altEnterDown = IsAltEnterDown(keyboard);
-		if (altEnterDown && !_altEnterWasDown)
+		if (WasEdgePressed(altEnterDown, _altEnterWasDown))
 		{
 			ToggleFullscreen(settings);
 		}
@@ -98,11 +100,12 @@ public sealed class DisplaySettingsApplier
 		_altEnterWasDown = altEnterDown;
 	}
 
-	private static bool IsAltEnterDown(KeyboardState keyboard)
+	public static bool WasEdgePressed(bool isDown, bool wasDown) => isDown && !wasDown;
+
+	public static bool IsAltEnterDown(KeyboardState keyboard)
 	{
 		bool alt = keyboard.IsKeyDown(Keys.LeftAlt) || keyboard.IsKeyDown(Keys.RightAlt);
-		bool enter = keyboard.IsKeyDown(Keys.Enter);
-		return alt && enter;
+		return alt && keyboard.IsKeyDown(Keys.Enter);
 	}
 
 	private void OnClientSizeChanged(object? sender, EventArgs e)

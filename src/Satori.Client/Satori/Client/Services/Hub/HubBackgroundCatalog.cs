@@ -1,9 +1,8 @@
-using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Satori.Client.UI;
-using Satori.Client.Views.Rendering;
 using Satori.Client.Views.Hub;
+using Satori.Client.Views.Rendering;
 
 namespace Satori.Client.Services.Hub;
 
@@ -13,12 +12,10 @@ public sealed class HubBackgroundCatalog : IDisposable
 
 	public void Initialize(GraphicsDevice graphicsDevice)
 	{
-		string path = Path.Combine(AppContext.BaseDirectory, "HubImages", "temple.png");
-		if (File.Exists(path))
-		{
-			_temple?.Dispose();
-			_temple = Texture2D.FromFile(graphicsDevice, path);
-		}
+		_temple?.Dispose();
+		_temple = TextureLoadHelper.TryLoadFirstExisting(
+			graphicsDevice,
+			ClientAssetPaths.InFolder("HubImages", "temple.png"));
 	}
 
 	public void Draw(SpriteBatch spriteBatch, Texture2D pixel, int virtualWidth, int virtualHeight, bool isNight)

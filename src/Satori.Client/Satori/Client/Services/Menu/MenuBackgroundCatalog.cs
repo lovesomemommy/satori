@@ -1,4 +1,3 @@
-using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Satori.Client.Views.Rendering;
@@ -16,20 +15,12 @@ public sealed class MenuBackgroundCatalog : IDisposable
 
 		foreach (string fileName in new[] { "background.png", "menu.background.png" })
 		{
-			string path = Path.Combine(AppContext.BaseDirectory, "MenuImages", fileName);
-			if (!File.Exists(path))
+			_background = TextureLoadHelper.TryLoadFirstExisting(
+				graphicsDevice,
+				ClientAssetPaths.InFolder("MenuImages", fileName));
+			if (_background != null)
 			{
-				continue;
-			}
-
-			try
-			{
-				_background = Texture2D.FromFile(graphicsDevice, path);
 				return;
-			}
-			catch (IOException)
-			{
-				_background = null;
 			}
 		}
 	}

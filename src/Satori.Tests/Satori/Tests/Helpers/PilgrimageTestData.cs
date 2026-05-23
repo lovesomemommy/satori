@@ -82,7 +82,6 @@ public static class PilgrimageTestData
 				new LotusModel
 				{
 					Id = i + 1,
-					Type = LotusType.Common,
 					SegmentIndex = i,
 					TileX = 10,
 					TileY = 5

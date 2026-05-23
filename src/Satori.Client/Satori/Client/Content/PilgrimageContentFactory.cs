@@ -151,7 +151,6 @@ public static class PilgrimageContentFactory
             models.Add(new LotusModel
             {
                 Id = nextLotusId++,
-                Type = LotusType.Common,
                 SegmentIndex = segmentIndex,
                 TileX = lotus.x,
                 TileY = lotus.y,

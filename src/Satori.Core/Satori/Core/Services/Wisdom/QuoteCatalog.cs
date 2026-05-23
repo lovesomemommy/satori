@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
-using Satori.Core.Models.Lotus;
-using Satori.Core.Models.Wisdom;
 
 namespace Satori.Core.Services.Wisdom;
 
@@ -33,9 +31,9 @@ public sealed class QuoteCatalog
 		return new QuoteCatalog(new Dictionary<string, string> { ["quote.lotus.01"] = "Ты сам должен приложить усилие. Будды лишь указывают путь." });
 	}
 
-	public string GetQuoteIdForLotus(int lotusId)
+	public string GetQuoteIdForPilgrimageSegment(int segmentIndex)
 	{
-		return $"quote.lotus.{lotusId:00}";
+		return $"quote.lotus.{segmentIndex + 1:00}";
 	}
 
 	public bool TryGetText(string quoteId, out string text)
@@ -48,23 +46,5 @@ public sealed class QuoteCatalog
 
 		text = string.Empty;
 		return false;
-	}
-
-	public QuoteRarity RarityForLotus(LotusType type)
-	{
-		if (1 == 0)
-		{
-		}
-		QuoteRarity result = type switch
-		{
-			LotusType.Rare => QuoteRarity.Rare, 
-			LotusType.Golden => QuoteRarity.Golden, 
-			LotusType.Spiritual => QuoteRarity.Spiritual, 
-			_ => QuoteRarity.Common, 
-		};
-		if (1 == 0)
-		{
-		}
-		return result;
 	}
 }

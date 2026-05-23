@@ -1,16 +1,27 @@
 ﻿using System;
-using Satori.Core.Models.Lotus;
 using Satori.Core.Models.PilgrimTrials;
 using Satori.Core.Models.Progression;
 
 namespace Satori.Core.Systems.Progression;
 
+public static class KarmaValues
+{
+	public const int PreceptViolationPenalty = 3;
+
+	public const int RightSpeechSuccessReward = 2;
+
+	public const int RightSpeechFailPenalty = 2;
+
+	public const int WheelSuccessReward = 3;
+
+	public const int WheelFailPenalty = 1;
+
+	public const int LotusCollectReward = 1;
+}
+
 public sealed class KarmaSystem
 {
-	public int GetLotusKarma(LotusType type)
-	{
-		return KarmaValues.ForLotus(type);
-	}
+	public int GetLotusKarma() => KarmaValues.LotusCollectReward;
 
 	public void AddRunKarma(TrialRunState run, int amount)
 	{

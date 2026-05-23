@@ -27,11 +27,11 @@ public static class WisdomGalleryView
 		"quote.lotus.03",
 		"quote.lotus.04",
 		"quote.lotus.05",
-		"quote.lotus.16",
-		"quote.lotus.17",
-		"quote.lotus.18",
-		"quote.lotus.19",
-		"quote.lotus.20"
+		"quote.lotus.06",
+		"quote.lotus.07",
+		"quote.lotus.08",
+		"quote.lotus.09",
+		"quote.lotus.10"
 	];
 
 	public static int CellSize

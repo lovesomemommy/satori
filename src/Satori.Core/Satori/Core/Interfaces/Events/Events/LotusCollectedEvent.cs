@@ -1,5 +1,3 @@
-﻿using Satori.Core.Models.Lotus;
+﻿namespace Satori.Core.Interfaces.Events.Events;
 
-namespace Satori.Core.Interfaces.Events.Events;
-
-public sealed record LotusCollectedEvent(int LotusId, LotusType Type) : IGameEvent;
+public sealed record LotusCollectedEvent(int LotusId) : IGameEvent;

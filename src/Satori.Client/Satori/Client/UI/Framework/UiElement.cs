@@ -5,7 +5,7 @@ using Satori.Client.UI;
 
 namespace Satori.Client.UI.Framework;
 
-public abstract class UiElement : IUiElement
+public abstract class UiElement
 {
 	public Rectangle Bounds { get; set; }
 

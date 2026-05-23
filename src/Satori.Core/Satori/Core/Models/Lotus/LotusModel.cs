@@ -4,8 +4,6 @@ public sealed class LotusModel
 {
 	public int Id { get; set; }
 
-	public LotusType Type { get; set; }
-
 	public int SegmentIndex { get; set; }
 
 	public int TileX { get; set; }

@@ -17,7 +17,6 @@ using Satori.Client.Views.PilgrimTrials;
 using Satori.Core.Interfaces.Events;
 using Satori.Core.Interfaces.Events.Events;
 using Satori.Core.Interfaces.Services;
-using Satori.Core.Interfaces.Systems;
 using Satori.Core.Models.Input;
 using Satori.Core.Models.Lotus;
 using Satori.Core.Models.Minigames;
@@ -52,7 +51,7 @@ public sealed class PilgrimTrialScene : IScene
 
 	private SceneContext? _context;
 
-	private IPilgrimPilgrimageSystem? _pilgrimage;
+	private PilgrimPilgrimageSystem? _pilgrimage;
 
 	private PreceptViolationSystem? _preceptSystem;
 
@@ -109,7 +108,7 @@ public sealed class PilgrimTrialScene : IScene
 	public void Load(SceneContext context)
 	{
 		_context = context;
-		_pilgrimage = (IPilgrimPilgrimageSystem)context.Services.GetRequiredService(typeof(IPilgrimPilgrimageSystem));
+		_pilgrimage = context.Services.GetRequiredService<PilgrimPilgrimageSystem>();
 		_preceptSystem = context.Services.GetRequiredService<PreceptViolationSystem>();
 		_lotusCollection = context.Services.GetRequiredService<LotusCollectionSystem>();
 		_meditation = context.Services.GetRequiredService<MeditationSystem>();
@@ -442,7 +441,15 @@ public sealed class PilgrimTrialScene : IScene
 			return false;
 		}
 
-		return segment.Lotuses.All(l => _pilgrimage.Run.CollectedLotusIds.Contains(l.Id));
+		foreach (LotusModel lotus in segment.Lotuses)
+		{
+			if (!_pilgrimage.Run.CollectedLotusIds.Contains(lotus.Id))
+			{
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	private void CheckRunOutcome()
@@ -503,14 +510,16 @@ public sealed class PilgrimTrialScene : IScene
 		_resultScreen.Clear();
 		UiPanel element = new UiPanel
 		{
-			Bounds = new Rectangle(40, 48, 240, 88),
+			Bounds = new Rectangle(36, 44, 248, 98),
 			BackgroundColor = new Color(24, 30, 42, 240)
 		};
 		UiLabel element2 = new UiLabel
 		{
 			Text = message,
-			Bounds = new Rectangle(50, 56, 220, 28),
-			Color = new Color(230, 220, 180)
+			Bounds = new Rectangle(46, 52, 228, 36),
+			Color = new Color(230, 220, 180),
+			WrapText = true,
+			LineHeight = 10
 		};
 		_resultScreen.Add(element);
 		_resultScreen.Add(element2);
@@ -519,16 +528,17 @@ public sealed class PilgrimTrialScene : IScene
 			_resultScreen.Add(new UiButton
 			{
 				Text = _context.Localization.Get("pilgrim.retry"),
-				Bounds = new Rectangle(48, 88, 136, 18),
+				Bounds = new Rectangle(44, 94, 152, 18),
+				UseCompactFont = true,
 				OnClick = retry
 			});
 		}
 
-		int hubX = retry == null ? 118 : 190;
+		int hubX = retry == null ? 118 : 200;
 		_resultScreen.Add(new UiButton
 		{
 			Text = _context.Localization.Get("pilgrim.return_hub"),
-			Bounds = new Rectangle(hubX, 88, 84, 18),
+			Bounds = new Rectangle(hubX, 94, 80, 18),
 			OnClick = leave
 		});
 	}
@@ -557,8 +567,7 @@ public sealed class PilgrimTrialScene : IScene
 			return;
 		}
 
-		var saveLoad = _context.Services.GetRequiredService<ISaveLoadService>();
-		saveLoad.SaveDefault(_context.Session.Save);
+		_context.PersistSave();
 	}
 
 	private void ResetMonkToCurrentSegment()
@@ -667,7 +676,7 @@ public sealed class PilgrimTrialScene : IScene
 				if (lotusModel.HasQuote)
 				{
 					_quoteUnlock.UnlockForRun(run, lotusModel);
-					_lotusRevealQuoteId = _quoteCatalog.GetQuoteIdForLotus(lotusModel.Id);
+					_lotusRevealQuoteId = _quoteCatalog.GetQuoteIdForPilgrimageSegment(lotusModel.SegmentIndex);
 					_lotusRevealOriginTileX = lotusModel.TileX;
 					_lotusRevealOriginTileY = lotusModel.TileY;
 					_lotusRevealProgress = 0f;
@@ -705,12 +714,40 @@ public sealed class PilgrimTrialScene : IScene
 
 	private LotusModel? GetLotusAtMonk()
 	{
-		return (_pilgrimage?.GetCurrentSegment())?.Lotuses.FirstOrDefault((LotusModel l) => l.TileX == _monkTileX && l.TileY == _monkTileY);
+		var segment = _pilgrimage?.GetCurrentSegment();
+		if (segment == null)
+		{
+			return null;
+		}
+
+		foreach (LotusModel lotus in segment.Lotuses)
+		{
+			if (lotus.TileX == _monkTileX && lotus.TileY == _monkTileY)
+			{
+				return lotus;
+			}
+		}
+
+		return null;
 	}
 
 	private LotusModel? FindLotusById(int lotusId)
 	{
-		return (_pilgrimage?.GetCurrentSegment())?.Lotuses.FirstOrDefault((LotusModel l) => l.Id == lotusId);
+		var segment = _pilgrimage?.GetCurrentSegment();
+		if (segment == null)
+		{
+			return null;
+		}
+
+		foreach (LotusModel lotus in segment.Lotuses)
+		{
+			if (lotus.Id == lotusId)
+			{
+				return lotus;
+			}
+		}
+
+		return null;
 	}
 
 	private void DrawMeditationHint()

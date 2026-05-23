@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Satori.Core.Models.PilgrimTrials;
+﻿using Satori.Core.Models.PilgrimTrials;
 
 namespace Satori.Core.Systems.PilgrimTrials;
 
@@ -11,11 +10,18 @@ public static class SegmentNavigation
 		{
 			return false;
 		}
-		return segment.Walls.All((TilePoint wall) => wall.X != tileX || wall.Y != tileY);
+
+		foreach (TilePoint wall in segment.Walls)
+		{
+			if (wall.X == tileX && wall.Y == tileY)
+			{
+				return false;
+			}
+		}
+
+		return true;
 	}
 
-	public static bool IsPortal(TrialSegmentDefinition segment, int tileX, int tileY)
-	{
-		return segment.ExitPortal.X == tileX && segment.ExitPortal.Y == tileY;
-	}
+	public static bool IsPortal(TrialSegmentDefinition segment, int tileX, int tileY) =>
+		segment.ExitPortal.X == tileX && segment.ExitPortal.Y == tileY;
 }

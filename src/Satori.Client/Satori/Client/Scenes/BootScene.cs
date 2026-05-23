@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Satori.Client;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using Satori.Client.Input;
 using Satori.Client.Services.Audio;
@@ -40,7 +41,15 @@ public sealed class BootScene : IScene
 		display.Apply(_context.Session.Settings);
 		var audio = _context.Services.GetRequiredService<IAudioService>();
 		audio.ApplySettings(_context.Session.Settings);
-		_context.SceneManager.ChangeTo(GameStateType.MainMenu, useFade: false);
+		var launchOptions = _context.Services.GetRequiredService<GameLaunchOptions>();
+		if (launchOptions.PostBootState == GameStateType.Settings)
+		{
+			SettingsSceneStarter.Open(_context, launchOptions.SettingsReturnState);
+		}
+		else
+		{
+			_context.SceneManager.ChangeTo(launchOptions.PostBootState, useFade: false);
+		}
 	}
 
 	public void Draw(GameTime gameTime)

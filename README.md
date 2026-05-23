@@ -28,6 +28,17 @@ cd satori
 dotnet run --project src/Satori.Desktop/Satori.Desktop.csproj
 ```
 
+На **macOS** и **Linux** запускайте только **Satori.Desktop** (MonoGame).  
+**Satori.Windows** — WinForms-launcher **только для Windows**; на Mac он не стартует (нет `Microsoft.WindowsDesktop.App`).
+
+**Windows** — дополнительно можно использовать WinForms-launcher с кнопками «Играть» и «Настройки»:
+
+```bash
+dotnet run --project src/Satori.Windows/Satori.Windows.csproj
+```
+
+Опция «Запускать игру сразу» сохраняется в `%APPDATA%\Satori\launcher.json`. Чтобы снова показать окно launcher: `dotnet run --project src/Satori.Windows/Satori.Windows.csproj -- --launcher`
+
 ---
 
 ## Сборка
@@ -84,7 +95,8 @@ satori/
 └── src/
     ├── Satori.Core/       # логика, сохранения, локализация
     ├── Satori.Client/     # графика, сцены, ресурсы
-    ├── Satori.Desktop/    # точка входа — запускать этот проект
+    ├── Satori.Desktop/    # точка входа (macOS / Linux / Windows)
+    ├── Satori.Windows/    # WinForms-launcher (только Windows)
     └── Satori.Tests/      # автотесты
 ```
 
@@ -127,9 +139,9 @@ satori/
 |-------|------------|
 | `MenuImages/` | фон главного меню (`background.png`) |
 | `HubImages/` | изображение храма в хабе |
-| `PiligrimImages/` | лотос, монах, стены, портал, следы (`footprint.png`) |
+| `PilgrimImages/` | лотос, монах, стены, портал, следы (`traces.png`) |
 | `GardenImages/` | пол сада |
-| `QuoteImages/` | картинки цитат, препятствия (монетка, жук и т.д.) |
+| `QuoteImages/` | картинки цитат (10 шт.), препятствия (монетка, жук, облако) |
 | `LocalTracks/` | фоновая музыка (`.ogg`) |
 | `Fonts/` | шрифты интерфейса |
 
@@ -146,7 +158,7 @@ satori/
 1. **Главное меню** → «Начать»
 2. **Храм (хаб)** — сад, паломничество, мини-игры, библиотека мудрости
 3. **Паломничество** — 5 троп, лотосы, медитация, цитаты
-4. **Финал** — пройти паломничество, посадить 20 лотосов в сад, собрать 10 цитат, достичь просветления → **Путь к реке**
+4. **Финал** — пройти паломничество, посадить **20 лотосов** в сад (15 из лабиринта + 5 из колеса), собрать **10 цитат** (5 из лабиринта + 5 из колеса), достичь просветления → **Путь к реке**
 
 ---
 

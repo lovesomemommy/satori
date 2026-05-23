@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Satori.Client.UI;
 using Satori.Client.Views.Lotus;
 using Satori.Client.Views.Rendering;
-using Satori.Core.Models.Lotus;
 using Satori.Core.Models.Progression;
 using Satori.Core.Systems.Progression;
 
@@ -53,7 +52,8 @@ public static class GardenView
 		float glowPhase,
 		Point origin,
 		Texture2D? gardenFloor,
-		Texture2D? lotusSprite)
+		Texture2D? lotusSprite,
+		Texture2D? wallTile = null)
 	{
 		var backgroundBounds = GetBackgroundBounds(origin);
 		if (gardenFloor != null)
@@ -64,6 +64,8 @@ public static class GardenView
 		{
 			spriteBatch.Draw(pixel, backgroundBounds, UiPalette.Panel);
 		}
+
+		DrawFence(spriteBatch, pixel, wallTile, backgroundBounds);
 
 		for (int slotIndex = 0; slotIndex < GardenPlantingSystem.MaxSlots; slotIndex++)
 		{
@@ -81,7 +83,7 @@ public static class GardenView
 			}
 			else
 			{
-				var lotusColor = GetLotusColor(planted.LotusType);
+				var lotusColor = UiPalette.PinkDim;
 				var pulse = 0.85f + 0.15f * MathF.Sin(glowPhase + slotIndex * 0.7f);
 				var inner = new Rectangle(slotBounds.X + 4, slotBounds.Y + 3, slotBounds.Width - 8, slotBounds.Height - 6);
 				spriteBatch.Draw(
@@ -105,6 +107,47 @@ public static class GardenView
 		return new Rectangle(x, y, SlotSize, SlotSize);
 	}
 
+	private static void DrawFence(
+		SpriteBatch spriteBatch,
+		Texture2D pixel,
+		Texture2D? wallTile,
+		Rectangle bounds)
+	{
+		int tile = FloorTileSize;
+		int outerLeft = bounds.X - tile;
+		int outerRight = bounds.Right;
+		int outerTop = bounds.Y - tile;
+		int outerBottom = bounds.Bottom;
+
+		for (int x = outerLeft; x <= outerRight; x += tile)
+		{
+			DrawFenceTile(spriteBatch, pixel, wallTile, new Rectangle(x, outerTop, tile, tile));
+			DrawFenceTile(spriteBatch, pixel, wallTile, new Rectangle(x, outerBottom, tile, tile));
+		}
+
+		for (int y = bounds.Y; y < bounds.Bottom; y += tile)
+		{
+			int height = Math.Min(tile, bounds.Bottom - y);
+			DrawFenceTile(spriteBatch, pixel, wallTile, new Rectangle(outerLeft, y, tile, height));
+			DrawFenceTile(spriteBatch, pixel, wallTile, new Rectangle(outerRight, y, tile, height));
+		}
+	}
+
+	private static void DrawFenceTile(
+		SpriteBatch spriteBatch,
+		Texture2D pixel,
+		Texture2D? wallTile,
+		Rectangle rect)
+	{
+		if (wallTile != null)
+		{
+			SpriteDrawHelper.DrawStretched(spriteBatch, wallTile, rect, Color.White);
+			return;
+		}
+
+		spriteBatch.Draw(pixel, rect, new Color(52, 44, 60));
+	}
+
 	private static void DrawTiledFloor(SpriteBatch spriteBatch, Texture2D floor, Rectangle bounds)
 	{
 		for (int y = bounds.Y; y < bounds.Bottom; y += FloorTileSize)
@@ -120,14 +163,5 @@ public static class GardenView
 
 	private static GardenSlotModel? FindPlantedSlot(PlayerMetaState meta, int slotIndex) =>
 		meta.PlantedLotuses.Find(slot => slot.SlotIndex == slotIndex);
-
-	private static Color GetLotusColor(LotusType type) =>
-		type switch
-		{
-			LotusType.Rare => UiPalette.GrayLight,
-			LotusType.Golden => new Color(230, 190, 120),
-			LotusType.Spiritual => UiPalette.Pink,
-			_ => UiPalette.PinkDim
-		};
 
 }

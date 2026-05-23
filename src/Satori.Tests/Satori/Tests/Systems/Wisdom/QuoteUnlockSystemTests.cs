@@ -21,7 +21,6 @@ public sealed class QuoteUnlockSystemTests
 		LotusModel lotus = new LotusModel
 		{
 			Id = 1,
-			Type = LotusType.Common,
 			SegmentIndex = 0
 		};
 		QuoteModel quoteModel = quoteUnlockSystem.UnlockForRun(trialRunState, lotus);
@@ -31,13 +30,35 @@ public sealed class QuoteUnlockSystemTests
 	}
 
 	[Fact]
+	public void UnlockForRun_UsesSegmentQuoteId()
+	{
+		QuoteCatalog catalog = new QuoteCatalog(new Dictionary<string, string>
+		{
+			["quote.lotus.01"] = "Тестовая цитата",
+			["quote.lotus.05"] = "Пятая тропа"
+		});
+		var quoteUnlockSystem = new QuoteUnlockSystem(catalog, new GameEventBus());
+		var trialRunState = new TrialRunState();
+		var lotus = new LotusModel
+		{
+			Id = 13,
+			SegmentIndex = 4,
+			HasQuote = true
+		};
+
+		var quoteModel = quoteUnlockSystem.UnlockForRun(trialRunState, lotus);
+
+		Assert.NotNull(quoteModel);
+		Assert.Equal("quote.lotus.05", quoteModel!.QuoteId);
+	}
+
+	[Fact]
 	public void CommitRunQuotes_MergesIntoWisdomLibrary()
 	{
 		TrialRunState trialRunState = new TrialRunState();
 		trialRunState.UnlockedQuotes.Add(new QuoteModel
 		{
-			QuoteId = "quote.lotus.01",
-			Rarity = QuoteRarity.Common
+			QuoteId = "quote.lotus.01"
 		});
 		WisdomLibraryState wisdomLibraryState = new WisdomLibraryState();
 		WisdomCommitSystem.CommitRunQuotes(trialRunState, wisdomLibraryState);

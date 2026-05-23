@@ -25,6 +25,28 @@ public static class TextureLoadHelper
 		return texture;
 	}
 
+	public static Texture2D? TryLoadFirstExisting(GraphicsDevice graphicsDevice, IEnumerable<string> candidatePaths, byte alphaThreshold = DefaultAlphaThreshold)
+	{
+		foreach (string candidatePath in candidatePaths)
+		{
+			if (!File.Exists(candidatePath))
+			{
+				continue;
+			}
+
+			try
+			{
+				return FromFile(graphicsDevice, candidatePath, alphaThreshold);
+			}
+			catch (Exception)
+			{
+				return null;
+			}
+		}
+
+		return null;
+	}
+
 	public static void StripAlphaFringe(Texture2D texture, byte alphaThreshold = DefaultAlphaThreshold)
 	{
 		var pixels = new Color[texture.Width * texture.Height];
